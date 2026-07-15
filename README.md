@@ -1506,3 +1506,356 @@ Das ist modular, realistisch in wenigen Monaten baubar und löst einen deutlich 
 [9]: https://www.edoeb.admin.ch/en/ai-and-data-protection?utm_source=chatgpt.com "AI and data protection"
 [10]: https://openai.github.io/openai-agents-js/guides/guardrails/?utm_source=chatgpt.com "Guardrails | OpenAI Agents SDK"
 [11]: https://openai.github.io/openai-agents-js/guides/mcp/?utm_source=chatgpt.com "Model Context Protocol (MCP) | OpenAI Agents SDK"
+
+----
+
+AGENT MD IPTIMISATION:
+
+**Nein, `agency-agents` ist nicht besser als eure aktuelle DogOS-/EventOS-Architektur – aber seine Installations- und Skill-Struktur ist eine sehr gute Ergänzung.**
+
+Das Repository ist im Kern eine große Sammlung installierbarer Markdown-Agenten mit Rollen, Persönlichkeiten, Arbeitsabläufen und Erfolgsmetriken. Diese Dateien können per Installer in Claude Code, Codex, Cursor, Gemini CLI und weitere Entwicklerwerkzeuge kopiert werden. Es ist damit primär ein **Prompt-/Agenten-Katalog für Entwickler**, nicht die vollständige Laufzeitarchitektur eines mehrmandantenfähigen Endkundenprodukts. ([GitHub][1])
+
+## Der entscheidende Unterschied
+
+```text
+agency-agents
+= Wissen + Rolle + Arbeitsanweisung für ein LLM
+
+DogOS / EventOS
+= persistentes Produkt + Geschäftslogik + Daten + Rechte +
+  Integrationen + Audit + deterministische Entscheidungen
+```
+
+Ein Markdown-Agent kann beispielsweise sagen:
+
+> Erstelle einen sicheren Trainingsplan und berücksichtige die Hundeanamnese.
+
+Er garantiert aber nicht:
+
+* dass die richtige Protokollversion verwendet wird;
+* dass Sicherheitsregeln tatsächlich durchgesetzt werden;
+* dass Daten eines anderen Kunden nicht sichtbar werden;
+* dass WhatsApp-Nachrichten idempotent verarbeitet werden;
+* dass Planänderungen nachvollziehbar bleiben;
+* dass ein Trainer-Referral korrekt verbucht wird;
+* dass Rentman-, Kalender- oder Lagerdaten synchronisiert werden;
+* dass ein LLM keine erfundene Entscheidung speichert.
+
+Genau diese Punkte lösen eure aktuellen Architekturen.
+
+# Warum eure Architektur langfristig stärker ist
+
+## 1. Der LLM-Anbieter kann ausgetauscht werden
+
+DogOS und EventOS legen die eigentliche Geschäftslogik nicht in einem Prompt ab.
+
+```text
+Claude / OpenAI / Gemini
+        ↓
+Sprach- und Tool-Layer
+        ↓
+kanonische Verträge
+        ↓
+deterministische Engines
+        ↓
+Datenbank und Integrationen
+```
+
+Wenn Claude Code, Codex oder Gemini sich ändern, bleiben:
+
+* Kundenkonten;
+* Trainingspläne;
+* Eventprojekte;
+* Aufgaben;
+* Sicherheitsregeln;
+* Historie;
+* Audit;
+* Berechtigungen;
+* Referral-Abrechnung.
+
+Bei einer rein agentenbasierten Markdown-Struktur hängt das Verhalten wesentlich stärker vom aktuell verwendeten Modell und dessen Interpretation der Anweisung ab.
+
+## 2. WhatsApp benötigt eine echte Laufzeit
+
+Ein Kunde kann nicht einfach einen DogOS-Agenten in Codex installieren und ihn dadurch zuverlässig über WhatsApp nutzen.
+
+WhatsApp benötigt unter anderem:
+
+* Business-Webhooks;
+* Telefonnummern- und Account-Verknüpfung;
+* Nachrichtenstatus;
+* Template-Regeln;
+* Medienverarbeitung;
+* Wiederholungs- und Idempotenzschutz;
+* Zeitpläne und Erinnerungen;
+* Benutzer- und Mandantentrennung;
+* sichere Aktionslinks;
+* persistente Unterhaltungshistorie.
+
+Das muss serverseitig betrieben werden. Ein lokaler Agent in Claude Code oder Codex läuft normalerweise nur, wenn der jeweilige Benutzer ihn aktiv verwendet.
+
+## 3. DogOS ist sicherheitskritisch
+
+Bei DogOS dürfen Trainings-, Gesundheits- und Eskalationsentscheidungen nicht nur in Markdown beschrieben werden.
+
+Ein Agent könnte trotz Anweisung:
+
+* Warnzeichen übersehen;
+* falsche Trainingsmethoden erfinden;
+* Unsicherheit nicht korrekt kommunizieren;
+* eine Rasse stereotyp interpretieren;
+* widersprüchliche Entscheidungen treffen.
+
+Deshalb ist eure Trennung richtig:
+
+```text
+LLM versteht und erklärt
+Regel-Engine entscheidet
+Datenbank dokumentiert
+Mensch übernimmt kritische Fälle
+```
+
+## 4. EventOS braucht verlässliche Transaktionen
+
+Für EventOS sind beispielsweise folgende Vorgänge keine reinen Agentenantworten:
+
+* Schicht speichern;
+* Route freigeben;
+* Material reservieren;
+* Rückgabe bestätigen;
+* Rentman-Daten synchronisieren;
+* Fahrer neu disponieren;
+* WhatsApp-Benachrichtigung versenden;
+* Arbeitszeit dokumentieren;
+* Eskalation an Teamleitung senden.
+
+Diese Vorgänge benötigen:
+
+* Berechtigungen;
+* Transaktionen;
+* Versionen;
+* Statusmaschinen;
+* Fehlerbehandlung;
+* Wiederholbarkeit;
+* Audit Logs.
+
+Ein Markdown-Agent kann diese Vorgänge steuern, aber er darf nicht deren einzige Implementierung sein.
+
+# Wo die `agency-agents`-Idee sehr sinnvoll ist
+
+Die richtige Lösung ist ein **hybrides Modell**.
+
+## Ebene 1: stabiler Produktkern
+
+```text
+DogOS Core
+- Profile
+- Anamnese
+- Protocol Engine
+- Safety Engine
+- Plans
+- Tracking
+- Referrals
+- WhatsApp
+- Audit
+
+EventOS Core
+- Organisations
+- Projects
+- Teams
+- Tasks
+- Routes
+- Inventory
+- Scheduling
+- Approvals
+- Rentman adapters
+- Audit
+```
+
+## Ebene 2: Agent API und Tool Layer
+
+Der Produktkern stellt sichere Werkzeuge bereit:
+
+```text
+DogOS tools
+- get_dog_profile
+- record_anamnesis_answer
+- generate_plan
+- record_session
+- evaluate_progress
+- request_trainer_review
+- list_trainer_slots
+
+EventOS tools
+- get_event_status
+- create_transport_plan
+- assign_shift
+- check_inventory
+- prepare_route_pack
+- request_approval
+- sync_rentman
+```
+
+Jedes Tool:
+
+* validiert Eingaben;
+* prüft Benutzerrechte;
+* arbeitet mandantenbezogen;
+* ist idempotent;
+* schreibt Audit Logs;
+* gibt strukturierte Ergebnisse zurück.
+
+## Ebene 3: installierbare Skills und Agenten
+
+Darüber könnt ihr eine `agency-agents`-ähnliche Distribution anbieten:
+
+```text
+agents/
+  dogos-training-coach.md
+  dogos-progress-reviewer.md
+  dogos-trainer-handoff.md
+  eventos-dispatcher.md
+  eventos-warehouse-coordinator.md
+  eventos-route-planner.md
+  eventos-project-lead.md
+
+skills/
+  dogos-create-plan/
+  dogos-review-session/
+  eventos-plan-transport/
+  eventos-prepare-loadout/
+
+mcp/
+  dogos-server/
+  eventos-server/
+```
+
+Dann kann ein professioneller Nutzer beispielsweise in Codex oder Claude Code sagen:
+
+> Nutze EventOS und plane Material, Fahrer und Route für das Projekt Basel Expo.
+
+Der Agent ruft jedoch nicht direkt Rentman oder die Datenbank auf, sondern ausschließlich eure kontrollierten Tools.
+
+# DogOS und EventOS brauchen unterschiedliche Vertriebsmodelle
+
+## DogOS
+
+Für normale Hundehalter sollte es **kein Installationsprodukt** sein.
+
+Der typische Nutzer möchte:
+
+* WhatsApp öffnen;
+* Fragen beantworten;
+* Plan erhalten;
+* Training dokumentieren;
+* Fortschritt sehen;
+* Trainer buchen.
+
+Er wird weder Codex noch Claude Code konfigurieren.
+
+Deshalb:
+
+```text
+DogOS Endkunden
+→ Managed WhatsApp SaaS
+
+Trainer und professionelle Partner
+→ Webportal + optional DogOS Agent/MCP
+```
+
+Ein installierbares DogOS-Skill-Paket eignet sich später für:
+
+* Hundetrainer;
+* Tierarztpraxen;
+* Forschungsprojekte;
+* interne Qualitätssicherung;
+* professionelle Fallanalyse.
+
+## EventOS
+
+EventOS eignet sich deutlich stärker für eine zweite Bereitstellungsform:
+
+```text
+1. Managed EventOS SaaS
+2. EventOS MCP/Agent Pack für Codex, Claude und interne Unternehmensagenten
+```
+
+Eventunternehmen verfügen häufiger über:
+
+* interne Tools;
+* IT-Verantwortliche;
+* bestehende ERP-Systeme;
+* Slack, Teams oder eigene KI-Arbeitsplätze;
+* individuelle Prozesse.
+
+Dort kann eine installierbare Agentenschicht ein echtes Verkaufsargument sein.
+
+# Empfohlene endgültige Architektur
+
+```text
+                    WhatsApp / PWA / Teams / Slack
+                                │
+                                ▼
+                    DogOS / EventOS API Gateway
+                                │
+              ┌─────────────────┼─────────────────┐
+              ▼                 ▼                 ▼
+       Deterministic Core    Agent Tools       Provider Adapters
+       Rules + State         MCP/API           Rentman/Cal/Maps
+              │                 │                 │
+              └─────────────────┼─────────────────┘
+                                ▼
+                       Postgres + Audit
+                                ▲
+                                │
+                  Codex / Claude / ChatGPT
+                                │
+                     installierbare Skills
+```
+
+# Was ihr von `agency-agents` übernehmen solltet
+
+Übernehmen:
+
+* eine Agent-Datei pro klarer Rolle;
+* standardisierte Metadaten;
+* klare Mission und Nicht-Zuständigkeiten;
+* konkrete Tool-Verträge;
+* Erfolgskriterien;
+* Installationsskript;
+* Codex-, Claude- und Cursor-Konvertierung;
+* eine Agent-/Skill-Registry;
+* versionierte Updates;
+* auswählbare Pakete je Kunde und Rolle.
+
+Nicht übernehmen:
+
+* Geschäftslogik ausschließlich in Markdown;
+* autonome Agenten mit direktem Datenbankzugriff;
+* viele Persönlichkeitsagenten ohne klaren Bedarf;
+* freie Agent-zu-Agent-Kommunikation;
+* implizite Zustände im Chatverlauf;
+* LLM-basierte Sicherheits- oder Freigabeentscheidungen.
+
+Das Repository selbst betont interessanterweise ebenfalls, dass produktionsfähige Multi-Agent-Systeme explizite Verträge, Least-Privilege-Zugriff, Fallbacks, Human-in-the-Loop, Observability und strukturierte Übergaben benötigen. Das entspricht eher eurer derzeitigen Architektur als einer reinen Sammlung autonomer Prompt-Agenten. ([GitHub][2])
+
+# Klare Entscheidung
+
+**DogOS:** bestehende Architektur beibehalten; später optional ein Trainer-/Expert-Agent-Pack ergänzen.
+
+**EventOS:** bestehende Architektur beibehalten, aber von Anfang an eine installierbare MCP-/Skill-Schicht als zweite Produktschnittstelle einplanen.
+
+**Nicht entweder SaaS oder Agentenpaket bauen.** Der beste langfristige Aufbau ist:
+
+```text
+verlässlicher, deterministischer Produktkern
++
+WhatsApp-first Endkundenoberfläche
++
+installierbare Skills/MCP-Tools für Codex, ChatGPT und Claude
+```
+
+Damit hält eure Architektur neuen Agentenplattformen besser stand: Wenn Codex, Claude Code oder ChatGPT leistungsfähiger werden, werden sie einfach zu besseren Oberflächen für DogOS und EventOS – sie ersetzen nicht euren Produktkern.
+
+[1]: https://github.com/msitarzewski/agency-agents "GitHub - msitarzewski/agency-agents: A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables. · GitHub"
+[2]: https://github.com/msitarzewski/agency-agents/blob/main/engineering/engineering-multi-agent-systems-architect.md "agency-agents/engineering/engineering-multi-agent-systems-architect.md at main · msitarzewski/agency-agents · GitHub"
